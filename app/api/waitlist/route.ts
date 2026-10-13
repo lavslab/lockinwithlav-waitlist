@@ -16,16 +16,17 @@ export async function POST(request: NextRequest) {
     const origin = request.headers.get("origin");
 
     const allowedOrigins = new Set(
-      [
-        "http://localhost:3000",
-        "https://join.lockinwithlav.com",
-        "https://lockinwithlav-waitlist.vercel.app",
-        process.env.NEXT_PUBLIC_SITE_URL,
-        process.env.VERCEL_URL
-          ? `https://${process.env.VERCEL_URL}`
-          : undefined,
-      ].filter((value): value is string => Boolean(value))
-    );
+  [
+    "http://localhost:3000",
+    "https://join.lockinwithlav.com",
+    "https://lockinwithlav-waitlist.vercel.app",
+    "https://lockinwithlav-waitlist-l2a74cb1c-lavslab.vercel.app",
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : undefined,
+  ].filter((value): value is string => Boolean(value))
+);
 
     if (!origin || !allowedOrigins.has(origin)) {
       return NextResponse.json(
