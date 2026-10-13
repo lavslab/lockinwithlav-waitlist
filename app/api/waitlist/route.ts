@@ -2,7 +2,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-
 export async function POST(request: NextRequest) {
   try {
     const contentType = request.headers.get("content-type") || "";
@@ -20,7 +19,11 @@ export async function POST(request: NextRequest) {
       [
         "http://localhost:3000",
         "https://join.lockinwithlav.com",
+        "https://lockinwithlav-waitlist.vercel.app",
         process.env.NEXT_PUBLIC_SITE_URL,
+        process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : undefined,
       ].filter((value): value is string => Boolean(value))
     );
 
@@ -97,7 +100,6 @@ export async function POST(request: NextRequest) {
       });
 
     if (error) {
-      // Unique email constraint: already on the list.
       if (error.code === "23505") {
         return NextResponse.json({
           success: true,
@@ -106,11 +108,11 @@ export async function POST(request: NextRequest) {
       }
 
       console.error("Waitlist insert failed:", {
-  code: error.code,
-  message: error.message,
-  details: error.details,
-  hint: error.hint,
-});
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+      });
 
       return NextResponse.json(
         { error: "Something went wrong. Please try again." },
@@ -119,15 +121,15 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true });
- } catch (error) {
-  console.error(
-    "Waitlist unexpected error:",
-    error instanceof Error ? error.message : "Unknown error"
-  );
+  } catch (error) {
+    console.error(
+      "Waitlist unexpected error:",
+      error instanceof Error ? error.message : "Unknown error"
+    );
 
-  return NextResponse.json(
-    { error: "Unable to process your request." },
-    { status: 400 }
-  );
-}
+    return NextResponse.json(
+      { error: "Unable to process your request." },
+      { status: 400 }
+    );
+  }
 }
